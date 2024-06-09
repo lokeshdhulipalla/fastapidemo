@@ -1,20 +1,23 @@
-# Use the official Python image from the Docker Hub
-FROM python:3.10-slim
+FROM public.ecr.aws/lts/ubuntu:22.04
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/New_York
+# Install any necessary packages
+RUN apt-get update && \
+    apt-get install -y pkg-config build-essential python3-dev libpq-dev libssl-dev libffi-dev weasyprint  python3-pip python3-testresources python3-wheel && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set the working directory in the container
-WORKDIR /app
+# Set the working directory to /app
+WORKDIR ~/
 
-# Copy the requirements.txt file to the working directory
-COPY requirements.txt .
-
-# Install the dependencies
-RUN pip install -r requirements.txt
-
-# Copy the rest of the application code to the working directory
+# Copy the rest of the application code to the container
 COPY . .
 
-# Expose the port that the FastAPI app will run on
+
+
+RUN pip3 install -r requirements.txt
+
+# Expose the port that the application listens on
 EXPOSE 8000
 
-# Command to run the FastAPI app using uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Start the server
+CMD ["sh", "-c", "uvicorn src.main:app --host 0.0.0.0 --port 8000"]
