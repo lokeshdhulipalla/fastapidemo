@@ -20,4 +20,4 @@ RUN pip3 install -r requirements.txt
 EXPOSE 8000
 
 # Start the server
-CMD ["sh", "-c", "uvicorn src.main:app --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port 8000"]
